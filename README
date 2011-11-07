@@ -1,1 +1,20 @@
-This file was created by IntelliJ IDEA 10.5.2 for binding GitHub repository
+This project creates script that can be used to secure (lock down) your JBoss AS installation.
+
+Currently works for JBoss AS 6.1.0.Final.
+
+TODO:
+- JBoss AS 6.0.0.Final support
+- JBoss AS 5.x support
+
+How to use it
+--------------
+1. install JBoss AS
+2. install Groovy
+   -- use http://groovy.codehaus.org/Download
+   -- use your OS favourite method: Fedora: yum install groovy
+3. run groovy securejboss.groovy <JBOSS SERVER HOME>
+   where <JBOSS SERVER HOME> is JBoss installation server home (aka profile directory)
+4. check output for possible problems
+
+
+Note: Always test your installation if it is secured properly.
