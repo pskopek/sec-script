@@ -1,26 +1,28 @@
 #! /usr/bin/groovy
 
- /*
-  * JBoss, Home of Professional Open Source
-  * Copyright 2005, JBoss Inc., and individual contributors as indicated
-  * by the @authors tag. See the copyright.txt in the distribution for a
-  * full listing of individual contributors.
-  *
-  * This is free software; you can redistribute it and/or modify it
-  * under the terms of the GNU Lesser General Public License as
-  * published by the Free Software Foundation; either version 2.1 of
-  * the License, or (at your option) any later version.
-  *
-  * This software is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  * Lesser General Public License for more details.
-  *
-  * You should have received a copy of the GNU Lesser General Public
-  * License along with this software; if not, write to the Free
-  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
+import java.util.jar.JarFile
+
+/*
+* JBoss, Home of Professional Open Source
+* Copyright 2005, JBoss Inc., and individual contributors as indicated
+* by the @authors tag. See the copyright.txt in the distribution for a
+* full listing of individual contributors.
+*
+* This is free software; you can redistribute it and/or modify it
+* under the terms of the GNU Lesser General Public License as
+* published by the Free Software Foundation; either version 2.1 of
+* the License, or (at your option) any later version.
+*
+* This software is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+* Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this software; if not, write to the Free
+* Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+* 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+*/
 
 /**
  * Script: securejboss.groovy
@@ -32,7 +34,7 @@
 
 public class Const {
 
-    public static final boolean MODIFY_FILES = true;
+    public static final boolean MODIFY_FILES = false;
 
     public static final String COMMENT_MARKER_BEGIN = " BEGIN: SECURED BY JBOSS ";
     public static final String COMMENT_MARKER_END   = " END: SECURED BY JBOSS ";
@@ -46,7 +48,10 @@ public class Const {
     public static final String XML_COMMENT_INTERIM = "";
 
     public static final String FILE_SUFFIX = ".tmp";
+
 }
+
+private String version = null
 
 def checkArguments(String[] args) {
 
@@ -64,10 +69,28 @@ def usage() {
     println "- at least one <sever home> has to be specified"
 }
 
+def checkVersion(String serverHome) {
 
+    JarFile runjar = new JarFile("$serverHome/../../bin/run.jar")
+    java.util.jar.Manifest m = runjar.getManifest()
+
+    java.util.jar.Attributes a = m.getMainAttributes()
+    version = a.getValue("Specification-Version").trim()
+
+    println "JBoss AS Version: $version"
+
+    if (!version.equals("6.1.0.Final")) {
+        println "Not supported JBoss AS version ($version)"
+        System.exit(2)
+    }
+
+
+}
 
 def secureServer(String serverHome) {
     println "Working on ServerHome=$serverHome"
+
+    checkVersion(serverHome);
 
     secureDomainJMXConsole(serverHome)
     secureJMXConsole(serverHome)
