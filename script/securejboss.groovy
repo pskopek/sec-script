@@ -34,7 +34,7 @@ import java.util.jar.JarFile
 
 public class Const {
 
-    public static final boolean MODIFY_FILES = false;
+    public static final boolean MODIFY_FILES = ! Boolean.parseBoolean(System.getProperty("dryrun", "false"));
 
     public static final String COMMENT_MARKER_BEGIN = " BEGIN: SECURED BY JBOSS ";
     public static final String COMMENT_MARKER_END   = " END: SECURED BY JBOSS ";
@@ -61,6 +61,9 @@ def checkArguments(String[] args) {
         System.exit(1)
     }
 
+    if (! Const.MODIFY_FILES)
+        println "WARNING: This is a dry run. No files modified!"
+
 }
 
 def usage() {
@@ -79,7 +82,7 @@ def checkVersion(String serverHome) {
 
     println "JBoss AS Version: $version"
 
-    if (!version.equals("6.1.0.Final")) {
+    if (!version.equals("6.1.0.Final") && !version.equals("6.0.0.Final")) {
         println "Not supported JBoss AS version ($version)"
         System.exit(2)
     }
