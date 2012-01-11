@@ -342,8 +342,10 @@ def comment(String file, String line1, String line2, String commentBegin, String
 
     }
 
-    if (Const.MODIFY_FILES)
+    if (Const.MODIFY_FILES) {
+        f.delete()
         r.renameTo(f)
+    }
 
 }
 
